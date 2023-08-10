@@ -1,0 +1,22 @@
+version: '3.8'
+
+services: 
+  races:
+    build:
+      context: ./races
+      dockerfile: Dockerfile
+    environment:
+      PORT: 4001
+    ports:
+      - 4001:4001
+
+  test:
+    image: flownative/k6
+    command: k6 run -e TARGET_URL="http://localhost:4001/graphql" /script.js
+    volumes:
+        - ./script.js:/script.js    
+    depends_on:
+      - races
+
+networks:
+  test-cluster:
