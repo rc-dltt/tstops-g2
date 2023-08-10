@@ -7,7 +7,7 @@ npm start
 ```
 
 To point to the HKJC sandbox environment pass the k6 argument
-`-e TARGET_URL=https://info.cld.iuww.com:8101/graphql/base/`
+`-e TARGET_URL=<url>`
 
 
 ## load test
