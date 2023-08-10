@@ -1,0 +1,25 @@
+version: '3.8'
+
+services: 
+  races:
+    build:
+      context: ./races
+      dockerfile: Dockerfile
+    environment:
+      PORT: 5001
+    ports:
+      - 5001:5001
+
+  # test:
+  #   image: flownative/k6
+  #   entrypoint: /bin/sh
+  #   user: root
+  #   command: k6 run --out json=results.json /test.js
+  #   volumes:
+  #       - ./test/script.js:/test.js    
+  #       - ./test/results.json:/results.json    
+  #   depends_on:
+  #     - races
+
+# networks:
+#   test-cluster:
