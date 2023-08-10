@@ -6,6 +6,11 @@ start the server from the `race` folder
 npm start
 ```
 
+or 
+```bash
+docker compose up -d races
+```
+
 To point to the HKJC sandbox environment pass the k6 argument
 `-e TARGET_URL=<url>`
 
