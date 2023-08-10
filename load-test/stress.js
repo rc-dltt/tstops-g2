@@ -4,22 +4,24 @@ import { check, sleep } from "k6";
 export const options = {
   discardResponseBodies: true,
   scenarios: {
-    contacts: {
-      executor: "constant-arrival-rate",
-      duration: "10s",
-      rate: 30,
+    stress: {
+      executor: "ramping-arrival-rate",
       timeUnit: "1s",
-      preAllocatedVUs: 50,
+      preAllocatedVUs: 250,
+      stages: [
+        { target: 500, duration: "30s" },
+        { target: 1000, duration: "30s" },
+        { target: 1500, duration: "1m" }, // stress load
+        { target: 0, duration: "30s" },
+      ],
     },
   },
   thresholds: {
-    http_req_failed: ["rate<0.01"], // http errors should be less than 1%
-    http_req_duration: ["p(95)<200"], // 95% of requests should be below 200ms
+    http_req_failed: ["rate<0.05"], // http errors should be less than 5%
+    http_req_duration: ["p(90)<400"], // 90% of requests should be below 400ms
   },
 };
 
-// const endpointUrl = "https://dltt-races-717a66b9ce08.herokuapp.com/graphql";
-// const endpointUrl = "http://localhost:4001/graphql";
 const endpointUrl = __ENV.TARGET_URL;
 
 const query = `
