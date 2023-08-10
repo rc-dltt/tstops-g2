@@ -4,7 +4,7 @@ import { check, sleep } from "k6";
 export const options = {
   discardResponseBodies: true,
   scenarios: {
-    load: {
+    load_stages: {
       executor: "ramping-arrival-rate",
       timeUnit: "1s",
       preAllocatedVUs: 50,
@@ -13,6 +13,13 @@ export const options = {
         { target: 250, duration: "1m" }, // average load
         { target: 0, duration: "30s" },
       ],
+    },
+    load: {
+      executor: "constant-arrival-rate",
+      rate: 250,
+      timeUnit: "1m",
+      preAllocatedVUs: 50,
+      duration: "3m"
     },
   },
   thresholds: {
@@ -51,13 +58,6 @@ export default function () {
     }),
     { headers: headers }
   );
-
   check(response, { "status is 200": (r) => r.status === 200 });
-
-  if (response.status === 200) {
-    console.log(JSON.stringify(response.body));
-    const body = JSON.parse(response.body);
-  }
-
   sleep(1);
 }

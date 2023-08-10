@@ -4,7 +4,7 @@ import { check, sleep } from "k6";
 export const options = {
   discardResponseBodies: true,
   scenarios: {
-    spike: {
+    spike_stages: {
       executor: "ramping-arrival-rate",
       preAllocatedVUs: 100,
       timeUnit: "1s",
@@ -52,13 +52,6 @@ export default function () {
     }),
     { headers: headers }
   );
-
   check(response, { "status is 200": (r) => r.status === 200 });
-
-  if (response.status === 200) {
-    console.log(JSON.stringify(response.body));
-    const body = JSON.parse(response.body);
-  }
-
   sleep(1);
 }

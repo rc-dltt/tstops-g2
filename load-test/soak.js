@@ -4,15 +4,22 @@ import { check, sleep } from "k6";
 export const options = {
   discardResponseBodies: true,
   scenarios: {
-    soak: {
+    soak_stages: {
       executor: "ramping-arrival-rate",
       preAllocatedVUs: 100,
       timeUnit: "1s",
       stages: [
-        { target: 250, duration: "30s" }, 
+        { target: 250, duration: "30s" },
         { target: 250, duration: "1h" }, // average load for continued time
-        { target: 0, duration: "30s" }, 
+        { target: 0, duration: "30s" },
       ],
+    },
+    soak: {
+      executor: "constant-arrival-rate",
+      preAllocatedVUs: 100,
+      timeUnit: "1m",
+      rate: 250,
+      duration: "1h",
     },
   },
   thresholds: {
@@ -51,13 +58,6 @@ export default function () {
     }),
     { headers: headers }
   );
-
   check(response, { "status is 200": (r) => r.status === 200 });
-
-  if (response.status === 200) {
-    console.log(JSON.stringify(response.body));
-    const body = JSON.parse(response.body);
-  }
-
   sleep(1);
 }

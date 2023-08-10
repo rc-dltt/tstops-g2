@@ -4,7 +4,7 @@ import { check, sleep } from "k6";
 export const options = {
   discardResponseBodies: true,
   scenarios: {
-    stress: {
+    stress_stages: {
       executor: "ramping-arrival-rate",
       timeUnit: "1s",
       preAllocatedVUs: 250,
@@ -14,6 +14,13 @@ export const options = {
         { target: 1500, duration: "1m" }, // stress load
         { target: 0, duration: "30s" },
       ],
+    },
+    stress: {
+      executor: "constant-arrival-rate",
+      preAllocatedVUs: 500,
+      rate: 1500, // stress load
+      timeUnit: "1m",
+      duration: "3m",
     },
   },
   thresholds: {
@@ -52,13 +59,6 @@ export default function () {
     }),
     { headers: headers }
   );
-
   check(response, { "status is 200": (r) => r.status === 200 });
-
-  if (response.status === 200) {
-    console.log(JSON.stringify(response.body));
-    const body = JSON.parse(response.body);
-  }
-
   sleep(1);
 }
