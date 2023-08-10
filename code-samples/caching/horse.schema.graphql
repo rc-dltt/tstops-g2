@@ -1,0 +1,78 @@
+type Query {
+    horses: [Horses!]!
+}
+
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+  inheritMaxAge: Boolean
+) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
+
+
+type RaceMeeting @key(fields: "id") @cacheControl(maxAge: 120) {
+  id: ID!
+  date: String!
+  races(id: String): [Race]!
+}
+
+type Race {
+  id: String!
+  no: Int
+  postTime: String
+  raceName_en: String
+  raceName_ch: String
+  venueCode: String
+  distance: Int
+  numberOfDeclaredStarters: Int
+  stackPrize: Int
+  wageringFieldSize: Int
+  raceIndex: Int
+  ratingRange: String
+  go_en: String
+  go_ch: String
+  provisionalRaceNumber: String
+  secDivDisInd: String
+  secNo: Int
+  overseasInd: Boolean
+  raceCourse: RaceCourse
+  raceTrack: RaceTrack
+  raceType_en: String
+  raceType_ch: String
+  raceClass_en: String
+  raceClass_ch: String
+  country_en: String
+  country_ch: String
+  runners(orderBy: [OrderBy!]): [Runner]
+  raceMeeting: RaceMeeting
+}
+
+type Runner {
+  id: ID!
+  no: String
+  standbyNo: String
+  horse: Horse
+  race: Race!
+}
+
+type Horse {
+  id: String!
+  code: String
+  name_en: String
+  name_ch: String
+  runners: [Runner!]
+}
+
+enum RunnerStatus {
+  Declared
+  Draft
+  DraftStandby
+  Ran
+  Scratched
+  ScratchedReserved
+  Standby
+}

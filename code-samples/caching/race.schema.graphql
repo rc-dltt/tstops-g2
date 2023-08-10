@@ -1,0 +1,65 @@
+type Query {
+    raceMeetings: [RaceMeeting!]!
+    races: [Race!]!
+}
+
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+  inheritMaxAge: Boolean
+) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
+
+
+type RaceMeeting @key(fields: "id") @cacheControl(maxAge: 120) {
+  id: ID!
+  date: String!
+  venueCode: String!
+  season: String
+  totalNumberOfRace: Int
+  currentNumberOfRace: Int
+  meetingNumber: Int
+  dateOfWeek: String
+  meetingType: String
+  meetingTrack_en: String
+  meetingTrack_ch: String
+  totalInvestment: String
+  rebateMinAmount: Int
+  races(id: String): [Race]! @cacheControl(maxAge: 30)
+  isActive: Boolean
+}
+
+type Race {
+  id: String!
+  no: Int
+  postTime: String
+  raceName_en: String
+  raceName_ch: String
+  venueCode: String
+  distance: Int
+  numberOfDeclaredStarters: Int
+  stackPrize: Int
+  wageringFieldSize: Int
+  raceIndex: Int
+  ratingRange: String
+  go_en: String
+  go_ch: String
+  provisionalRaceNumber: String
+  secDivDisInd: String
+  secNo: Int
+  overseasInd: Boolean
+  raceCourse: RaceCourse
+  raceTrack: RaceTrack
+  raceType_en: String
+  raceType_ch: String
+  raceClass_en: String
+  raceClass_ch: String
+  country_en: String
+  country_ch: String
+  runners(orderBy: [OrderBy!]): [Runner]
+  raceMeeting: RaceMeeting
+}
